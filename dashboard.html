@@ -145,20 +145,62 @@ async function loadDashboard() {
   }
 
   data.forEach(item => {
-    const row = document.createElement('tr');
-    [
-      item.name || 'Anonymous',
-      item.category || '-',
-      item.location || '-',
-      item.description || '-',
-      item.status || 'Pending'
-    ].forEach(value => {
-      const cell = document.createElement('td');
-      cell.textContent = value;
-      row.appendChild(cell);
-    });
-    list.appendChild(row);
+  const row = document.createElement('tr');
+
+  [
+    item.name || 'Anonymous',
+    item.category || '-',
+    item.location || '-',
+    item.description || '-'
+  ].forEach(value => {
+    const cell = document.createElement('td');
+    cell.textContent = value;
+    row.appendChild(cell);
   });
+
+  const statusCell = document.createElement('td');
+
+  const select = document.createElement('select');
+
+  ['Pending', 'In Progress', 'Resolved'].forEach(status => {
+    const option = document.createElement('option');
+    option.value = status;
+    option.textContent = status;
+    select.appendChild(option);
+  });
+
+  select.value = item.status || 'Pending';
+
+  const saveButton = document.createElement('button');
+  saveButton.textContent = 'Save';
+  saveButton.style.marginLeft = '8px';
+
+  saveButton.addEventListener('click', async () => {
+    saveButton.disabled = true;
+    saveButton.textContent = 'Saving...';
+
+    const { error } = await db
+      .from('complaints')
+      .update({ status: select.value })
+      .eq('id', item.id);
+
+    if (error) {
+      console.error(error);
+      alert('Unable to update complaint status.');
+    } else {
+      alert('Complaint status updated successfully!');
+    }
+
+    saveButton.disabled = false;
+    saveButton.textContent = 'Save';
+  });
+
+  statusCell.appendChild(select);
+  statusCell.appendChild(saveButton);
+  row.appendChild(statusCell);
+
+  list.appendChild(row);
+});
 }
 
 logout.addEventListener('click', async () => {
