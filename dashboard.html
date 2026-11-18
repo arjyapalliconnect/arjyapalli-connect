@@ -61,6 +61,47 @@ th, td {
 
   <div id="dashboard">
     <div class="card">
+  <h2>Publish Village News</h2>
+  <p>Share village announcements and development updates.</p>
+
+  <form id="newsForm">
+    <input
+      type="text"
+      id="newsTitle"
+      placeholder="News Title"
+      required
+    >
+
+    <select id="newsCategory" required>
+      <option value="">Select Category</option>
+      <option value="Village News">Village News</option>
+      <option value="Development">Development</option>
+      <option value="Government">Government</option>
+      <option value="Public Notice">Public Notice</option>
+      <option value="Events">Events</option>
+    </select>
+
+    <textarea
+      id="newsContent"
+      placeholder="Write news details..."
+      rows="5"
+      required
+    ></textarea>
+
+    <input
+      type="url"
+      id="newsImage"
+      placeholder="Image URL (optional)"
+    >
+
+    <button type="submit" id="publishNewsBtn">
+      Publish News
+    </button>
+
+    <p id="newsMessage" role="status"></p>
+  </form>
+</div>
+    <div class="card">
       <h2>Village Complaints</h2>
       <p>View complaints submitted by residents.</p>
 
@@ -202,6 +243,57 @@ async function loadDashboard() {
   list.appendChild(row);
 });
 }
+
+const newsForm = document.getElementById('newsForm');
+const newsMessage = document.getElementById('newsMessage');
+const publishNewsBtn = document.getElementById('publishNewsBtn');
+
+newsForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const title = document.getElementById('newsTitle').value.trim();
+  const category = document.getElementById('newsCategory').value;
+  const content = document.getElementById('newsContent').value.trim();
+  const imageUrl = document.getElementById('newsImage').value.trim();
+
+  publishNewsBtn.disabled = true;
+  publishNewsBtn.textContent = 'Publishing...';
+  newsMessage.textContent = '';
+
+  try {
+    const { data: { user }, error: authError } =
+      await db.auth.getUser();
+
+    if (authError || !user || user.id !== ADMIN_UID) {
+      newsMessage.textContent = 'Admin access required.';
+      return;
+    }
+
+    const { error } = await db
+      .from('news')
+      .insert({
+        title: title,
+        category: category,
+        content: content,
+        image_url: imageUrl || null,
+        published: true
+      });
+
+    if (error) {
+      console.error(error);
+      newsMessage.textContent = 'Failed to publish news: ' + error.message;
+    } else {
+      newsMessage.textContent = 'News published successfully!';
+      newsForm.reset();
+    }
+  } catch (error) {
+    console.error(error);
+    newsMessage.textContent = 'An unexpected error occurred.';
+  } finally {
+    publishNewsBtn.disabled = false;
+    publishNewsBtn.textContent = 'Publish News';
+  }
+});
 
 logout.addEventListener('click', async () => {
   await db.auth.signOut();
