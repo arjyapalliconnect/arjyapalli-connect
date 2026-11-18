@@ -113,7 +113,16 @@ document.getElementById('issueForm').addEventListener('submit', async (e) => {
     console.error(error);
     message.textContent = 'Submission failed. Please try again.';
   } else {
-    message.textContent = 'Complaint submitted successfully!';
+
+message.textContent = '✅ Your complaint has been submitted successfully! Thank you for helping improve our village.';
+message.style.display = 'block';
+message.style.color = '#176b63';
+message.style.backgroundColor = '#e5f7ef';
+message.style.padding = '14px';
+message.style.borderRadius = '10px';
+message.style.marginTop = '12px';
+message.setAttribute('role', 'status');
+message.scrollIntoView({ behavior: 'smooth', block: 'center' });
     form.reset();
   }
 });
