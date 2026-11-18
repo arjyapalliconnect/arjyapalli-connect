@@ -70,6 +70,38 @@ const db = window.supabase.createClient(
 );
 const langSelect=document.getElementById('language');
 langSelect.addEventListener('change',()=>{const lang=langSelect.value;document.querySelectorAll('[data-'+lang+']').forEach(el=>{el.innerHTML=el.getAttribute('data-'+lang)});document.documentElement.lang=lang==='or'?'or':lang==='te'?'te':'en';});
-document.getElementById('issueForm').addEventListener('submit',e=>{e.preventDefault();document.getElementById('form-message').style.display='block';});
+document.getElementById('issueForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const form = e.currentTarget;
+  const message = document.getElementById('form-message');
+
+  const name = document.getElementById('name').value.trim();
+  const category = document.getElementById('category').value;
+  const location = document.getElementById('location').value.trim();
+  const details = document.getElementById('details').value.trim();
+
+  if (!location || !details) {
+    message.textContent = 'Please enter the location and issue details.';
+    return;
+  }
+
+  message.textContent = 'Submitting your complaint...';
+
+  const { error } = await db.from('complaints').insert({
+    name,
+    category,
+    location,
+    details
+  });
+
+  if (error) {
+    console.error(error);
+    message.textContent = 'Submission failed. Please try again.';
+  } else {
+    message.textContent = 'Complaint submitted successfully!';
+    form.reset();
+  }
+});
 </script>
 </body></html>
