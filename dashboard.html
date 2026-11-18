@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard | Arjyapalli Connect</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f6f3ec;
+  color: #102c3b;
+}
+header {
+  background: #102c3b;
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+main { max-width: 1100px; margin: 30px auto; padding: 15px; }
+.card {
+  background: white;
+  padding: 24px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+button {
+  background: #176b63;
+  color: white;
+  border: 0;
+  border-radius: 7px;
+  padding: 11px 16px;
+  cursor: pointer;
+}
+table { width: 100%; border-collapse: collapse; }
+th, td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  overflow-wrap: anywhere;
+}
+.table-wrap { overflow-x: auto; }
+#dashboard { display: none; }
+#message { margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <strong>Arjyapalli Connect | Admin Dashboard</strong>
+  <button id="logout" hidden>Logout</button>
+</header>
+
+<main>
+  <p id="message" role="status">Checking admin access...</p>
+
+  <div id="dashboard">
+    <div class="card">
+      <h2>Village Complaints</h2>
+      <p>View complaints submitted by residents.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Location</th>
+              <th>Description</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="complaintsList"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL =
+  'https://yzaxzajpcmmgtaomwvhl.supabase.co';
+
+const SUPABASE_KEY =
+  'sb_publishable_VJ8ePABV7Hpfqw8POlHtMQ_MO36Xm-0';
+
+const ADMIN_UID =
+  '1dbe4761-cc00-43c0-86db-f59bc76c4f23';
+
+const db = window.supabase.createClient(
+  SUPABASE_URL, SUPABASE_KEY
+);
+
+const message = document.getElementById('message');
+const dashboard = document.getElementById('dashboard');
+const logout = document.getElementById('logout');
+
+async function loadDashboard() {
+  const { data: { user }, error: authError } =
+    await db.auth.getUser();
+
+  if (authError || !user) {
+    window.location.replace('/admin.html');
+    return;
+  }
+
+  if (user.id !== ADMIN_UID) {
+    message.textContent = 'Access denied. Admin only.';
+    await db.auth.signOut();
+    return;
+  }
+
+  dashboard.style.display = 'block';
+  logout.hidden = false;
+  message.textContent = 'Welcome, Administrator!';
+
+  const { data, error } = await db
+    .from('complaints')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error(error);
+    message.textContent = 'Unable to load complaints.';
+    return;
+  }
+
+  const list = document.getElementById('complaintsList');
+  list.replaceChildren();
+
+  if (!data.length) {
+    const row = document.createElement('tr');
+    const cell = document.createElement('td');
+    cell.colSpan = 5;
+    cell.textContent = 'No complaints yet.';
+    row.appendChild(cell);
+    list.appendChild(row);
+    return;
+  }
+
+  data.forEach(item => {
+    const row = document.createElement('tr');
+    [
+      item.name || 'Anonymous',
+      item.category || '-',
+      item.location || '-',
+      item.description || '-',
+      item.status || 'Pending'
+    ].forEach(value => {
+      const cell = document.createElement('td');
+      cell.textContent = value;
+      row.appendChild(cell);
+    });
+    list.appendChild(row);
+  });
+}
+
+logout.addEventListener('click', async () => {
+  await db.auth.signOut();
+  window.location.replace('/admin.html');
+});
+
+loadDashboard();
+</script>
+</body>
+</html>
