@@ -42,6 +42,21 @@ footer{background:#0b202b;color:#d8e5e2;padding:32px 6%;text-align:center}footer
 <div class="card"><div class="icon">🌊</div><h3 data-en="Coastal Updates" data-te="తీర ప్రాంత సమాచారం" data-or="ଉପକୂଳ ଅପଡେଟ୍">Coastal Updates</h3><p data-en="Follow coastal erosion, fishing-community concerns and shoreline protection." data-te="తీర కోత, మత్స్యకారుల సమస్యలు మరియు తీర రక్షణ గురించి తెలుసుకోండి." data-or="ଉପକୂଳ କ୍ଷୟ, ମତ୍ସ୍ୟଜୀବୀଙ୍କ ସମସ୍ୟା ଓ ଉପକୂଳ ସୁରକ୍ଷା ବିଷୟରେ ଜାଣନ୍ତୁ.">Follow coastal erosion, fishing-community concerns and shoreline protection.</p></div>
 <div class="card"><div class="icon">👥</div><h3 data-en="Youth Connect" data-te="యూత్ కనెక్ట్" data-or="ଯୁବ ସଂଯୋଗ">Youth Connect</h3><p data-en="Jobs, education, sports, volunteering and opportunities for young people." data-te="ఉద్యోగాలు, విద్య, క్రీడలు, సేవా కార్యక్రమాలు మరియు యువత అవకాశాలు." data-or="ଚାକିରି, ଶିକ୍ଷା, କ୍ରୀଡା, ସ୍ୱେଚ୍ଛାସେବା ଓ ଯୁବପିଢ଼ି ପାଇଁ ସୁଯୋଗ.">Jobs, education, sports, volunteering and opportunities for young people.</p></div>
 </div></section>
+  
+<section id="latest-news" style="margin-top:48px">
+  <div class="section-head">
+    <div>
+      <h2>📰 Latest Village News</h2>
+      <p>Latest announcements and updates from Arjyapalli Connect.</p>
+    </div>
+  </div>
+
+  <div class="grid" id="newsList">
+    <div class="card">
+      <p>Loading village news...</p>
+    </div>
+  </div>
+</section>
 <section id="development" style="margin-top:48px"><div class="section-head"><div><h2 data-en="Development Tracker" data-te="అభివృద్ధి ట్రాకర్" data-or="ବିକାଶ ଟ୍ରାକର୍">Development Tracker</h2><p data-en="Track projects transparently. Sample entries below need verification before publication." data-te="ప్రాజెక్టులను పారదర్శకంగా ట్రాక్ చేయండి. క్రింది నమూనా వివరాలను ప్రచురించే ముందు నిర్ధారించాలి." data-or="ପ୍ରକଳ୍ପଗୁଡ଼ିକୁ ସ୍ୱଚ୍ଛ ଭାବେ ଟ୍ରାକ୍ କରନ୍ତୁ. ନିମ୍ନ ନମୁନା ତଥ୍ୟ ପ୍ରକାଶ ପୂର୍ବରୁ ଯାଞ୍ଚ କରନ୍ତୁ.">Track projects transparently. Sample entries below need verification before publication.</p></div></div>
 <div class="card">
 <div class="project"><div><strong data-en="Road & Drainage" data-te="రోడ్లు & డ్రైనేజీ" data-or="ରାସ୍ତା ଓ ଡ୍ରେନେଜ୍">Road & Drainage</strong><div class="notice" data-en="Add official project details and updates" data-te="అధికారిక ప్రాజెక్ట్ వివరాలు జోడించండి" data-or="ସରକାରୀ ପ୍ରକଳ୍ପ ବିବରଣୀ ଯୋଡନ୍ତୁ">Add official project details and updates</div></div><span class="status pending" data-en="Needs update" data-te="అప్‌డేట్ అవసరం" data-or="ଅପଡେଟ୍ ଆବଶ୍ୟକ">Needs update</span></div>
@@ -82,6 +97,63 @@ const db = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+    
+async function loadVillageNews() {
+  const newsList = document.getElementById('newsList');
+
+  const { data, error } = await db
+    .from('news')
+    .select('title, content, category, image_url, created_at')
+    .eq('published', true)
+    .order('created_at', { ascending: false })
+    .limit(9);
+
+  newsList.replaceChildren();
+
+  if (error) {
+    console.error(error);
+    newsList.textContent = 'Unable to load village news.';
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    newsList.textContent = 'No village news published yet.';
+    return;
+  }
+
+  data.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    if (item.image_url) {
+      const img = document.createElement('img');
+      img.src = item.image_url;
+      img.alt = item.title || 'Village news image';
+      img.loading = 'lazy';
+      img.style.width = '100%';
+      img.style.borderRadius = '10px';
+      card.appendChild(img);
+    }
+
+    const title = document.createElement('h3');
+    title.textContent = item.title || 'Village Update';
+
+    const content = document.createElement('p');
+    content.textContent = item.content || '';
+
+    const category = document.createElement('span');
+    category.className = 'tag';
+    category.textContent = item.category || 'Village News';
+
+    card.appendChild(title);
+    card.appendChild(content);
+    card.appendChild(category);
+
+    newsList.appendChild(card);
+  });
+}
+
+loadVillageNews();
 const langSelect=document.getElementById('language');
 langSelect.addEventListener('change',()=>{const lang=langSelect.value;document.querySelectorAll('[data-'+lang+']').forEach(el=>{el.innerHTML=el.getAttribute('data-'+lang)});document.documentElement.lang=lang==='or'?'or':lang==='te'?'te':'en';});
 document.getElementById('issueForm').addEventListener('submit', async (e) => {
