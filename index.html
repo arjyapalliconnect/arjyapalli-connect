@@ -58,7 +58,9 @@ footer{background:#0b202b;color:#d8e5e2;padding:32px 6%;text-align:center}footer
 <section id="community" style="margin-top:48px"><div class="banner"><div><h2 data-en="A better village begins with participation." data-te="మన భాగస్వామ్యంతో మంచి గ్రామం మొదలవుతుంది." data-or="ଅଂଶଗ୍ରହଣରୁ ଏକ ଉନ୍ନତ ଗାଁ ଆରମ୍ଭ ହୁଏ.">A better village begins with participation.</h2><p data-en="Share ideas, volunteer, ask questions and help keep our community informed." data-te="ఆలోచనలు పంచుకోండి, సేవ చేయండి, ప్రశ్నించండి, కమ్యూనిటీకి సమాచారం అందించండి." data-or="ମତାମତ ବାଣ୍ଟନ୍ତୁ, ସ୍ୱେଚ୍ଛାସେବା କରନ୍ତୁ, ପ୍ରଶ୍ନ କରନ୍ତୁ ଓ ସମୁଦାୟକୁ ସଚେତନ ରଖନ୍ତୁ.">Share ideas, volunteer, ask questions and help keep our community informed.</p></div><a class="btn" href="#issues" data-en="Get Involved" data-te="భాగస్వామ్యం అవ్వండి" data-or="ଯୋଗ ଦିଅନ୍ତୁ">Get Involved</a></div></section>
 </main>
 <footer><strong>ARJYAPALLI CONNECT</strong><p data-en="Our Village. Our Voice. Our Future." data-te="మన ఊరు. మన గొంతు. మన భవిష్యత్తు." data-or="ଆମ ଗାଁ. ଆମ ସ୍ୱର. ଆମ ଭବିଷ୍ୟତ.">Our Village. Our Voice. Our Future.</p><p>Community website concept · Verify information before publishing</p></footer>
-<script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
 const langSelect=document.getElementById('language');
 langSelect.addEventListener('change',()=>{const lang=langSelect.value;document.querySelectorAll('[data-'+lang+']').forEach(el=>{el.innerHTML=el.getAttribute('data-'+lang)});document.documentElement.lang=lang==='or'?'or':lang==='te'?'te':'en';});
 document.getElementById('issueForm').addEventListener('submit',e=>{e.preventDefault();document.getElementById('form-message').style.display='block';});
