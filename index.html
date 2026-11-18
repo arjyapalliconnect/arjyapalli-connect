@@ -61,6 +61,13 @@ footer{background:#0b202b;color:#d8e5e2;padding:32px 6%;text-align:center}footer
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+const SUPABASE_URL = 'https://yzaxzajpcmmgtaomwvhl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_VJ8ePABV7Hpfqw8POlHtMQ_MO36Xm-0';
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 const langSelect=document.getElementById('language');
 langSelect.addEventListener('change',()=>{const lang=langSelect.value;document.querySelectorAll('[data-'+lang+']').forEach(el=>{el.innerHTML=el.getAttribute('data-'+lang)});document.documentElement.lang=lang==='or'?'or':lang==='te'?'te':'en';});
 document.getElementById('issueForm').addEventListener('submit',e=>{e.preventDefault();document.getElementById('form-message').style.display='block';});
