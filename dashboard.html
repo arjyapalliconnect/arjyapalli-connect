@@ -5,7 +5,62 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin Dashboard | Arjyapalli Connect</title>
-<style>
+  <style>
+/* Development Project Form */
+
+#projectForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 750px;
+  margin-top: 24px;
+}
+
+#projectForm input,
+#projectForm textarea,
+#projectForm select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #d4dfda;
+  border-radius: 10px;
+  background: #fbfdfc;
+  color: #102c3b;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+}
+
+#projectForm label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#projectDescription {
+  min-height: 120px;
+  resize: vertical;
+}
+
+#addProjectBtn {
+  align-self: flex-start;
+  padding: 14px 26px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+#addProjectBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#projectMessage {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  #addProjectBtn {
+    width: 100%;
+  }
+}
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -177,8 +232,6 @@ th, td {
   </div>
 </div>
     <div class="card">
-      
-<div class="card">
   <h2>Add Development Project</h2>
   <p>Track village development works and government projects.</p>
 
@@ -229,7 +282,9 @@ th, td {
     <p id="projectMessage" role="status"></p>
   </form>
 </div>
-      <h2>Village Complaints</h2>
+
+<div class="card">
+  <h2>Village Complaints</h2>
       <p>View complaints submitted by residents.</p>
 
       <div class="table-wrap">
