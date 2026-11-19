@@ -168,6 +168,14 @@ th, td {
     <p id="newsMessage" role="status"></p>
   </form>
 </div>
+<div class="card">
+  <h2>Manage Village News</h2>
+  <p>View, edit, unpublish, or delete announcements.</p>
+
+  <div id="manageNewsList">
+    <p>News management will load here.</p>
+  </div>
+</div>
     <div class="card">
       <h2>Village Complaints</h2>
       <p>View complaints submitted by residents.</p>
@@ -311,6 +319,47 @@ async function loadDashboard() {
 });
 }
 
+async function loadManageNews() {
+  const container = document.getElementById('manageNewsList');
+  container.textContent = 'Loading news...';
+
+  const { data, error } = await db
+    .from('news')
+    .select('id, title, category, published, created_at')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error(error);
+    container.textContent = 'Unable to load news.';
+    return;
+  }
+
+  container.replaceChildren();
+
+  if (!data || data.length === 0) {
+    container.textContent = 'No news available.';
+    return;
+  }
+
+  data.forEach(item => {
+    const card = document.createElement('div');
+    card.style.padding = '15px 0';
+    card.style.borderBottom = '1px solid #ddd';
+
+    const title = document.createElement('h3');
+    title.textContent = item.title || 'Untitled News';
+
+    const category = document.createElement('p');
+    category.textContent = 'Category: ' + (item.category || '-');
+
+    const status = document.createElement('p');
+    status.textContent = item.published ? 'Status: Published' : 'Status: Unpublished';
+
+    card.append(title, category, status);
+    container.appendChild(card);
+  });
+}
+
 const newsForm = document.getElementById('newsForm');
 const newsMessage = document.getElementById('newsMessage');
 const publishNewsBtn = document.getElementById('publishNewsBtn');
@@ -368,6 +417,7 @@ logout.addEventListener('click', async () => {
 });
 
 loadDashboard();
+  loadManageNews();
 </script>
 </body>
 </html>
