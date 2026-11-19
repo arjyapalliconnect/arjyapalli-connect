@@ -355,8 +355,39 @@ async function loadManageNews() {
     const status = document.createElement('p');
     status.textContent = item.published ? 'Status: Published' : 'Status: Unpublished';
 
-    card.append(title, category, status);
-    container.appendChild(card);
+    
+const toggleButton = document.createElement('button');
+
+toggleButton.textContent = item.published
+  ? 'Unpublish'
+  : 'Publish';
+
+toggleButton.addEventListener('click', async () => {
+  const newStatus = !item.published;
+
+  toggleButton.disabled = true;
+  toggleButton.textContent = 'Saving...';
+
+  const { error } = await db
+    .from('news')
+    .update({ published: newStatus })
+    .eq('id', item.id);
+
+  if (error) {
+    console.error(error);
+    alert('Unable to change news status.');
+    toggleButton.disabled = false;
+    toggleButton.textContent = item.published
+      ? 'Unpublish'
+      : 'Publish';
+    return;
+  }
+
+  await loadManageNews();
+});
+
+card.append(title, category, status, toggleButton);
+container.appendChild(card);
   });
 }
 
