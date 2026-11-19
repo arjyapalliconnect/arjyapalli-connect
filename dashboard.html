@@ -325,7 +325,7 @@ async function loadManageNews() {
 
   const { data, error } = await db
     .from('news')
-    .select('id, title, category, published, created_at')
+    .select('id, title, content, category, image_url, published, created_at')
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -418,7 +418,45 @@ deleteButton.addEventListener('click', async () => {
   await loadManageNews();
 });
 
-card.append(title, category, status, toggleButton, deleteButton);
+const editButton = document.createElement('button');
+editButton.textContent = 'Edit';
+editButton.style.marginRight = '10px';
+
+editButton.addEventListener('click', async () => {
+  const newTitle = prompt('Edit news title:', item.title);
+  if (newTitle === null) return;
+
+  const newContent = prompt('Edit news description:', item.content || '');
+  if (newContent === null) return;
+
+  if (!newTitle.trim() || !newContent.trim()) {
+    alert('Title and description cannot be empty.');
+    return;
+  }
+
+  editButton.disabled = true;
+  editButton.textContent = 'Saving...';
+
+  const { error } = await db
+    .from('news')
+    .update({
+      title: newTitle.trim(),
+      content: newContent.trim()
+    })
+    .eq('id', item.id);
+
+  if (error) {
+    console.error(error);
+    alert('Unable to update news: ' + error.message);
+    editButton.disabled = false;
+    editButton.textContent = 'Edit';
+    return;
+  }
+
+  await loadManageNews();
+});
+
+card.append(title, category, status, editButton, toggleButton, deleteButton);
 container.appendChild(card);
   });
 }
