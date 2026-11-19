@@ -4,7 +4,95 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Arjyapalli Connect | Our Village. Our Voice. Our Future.</title>
 <meta name="description" content="A community platform for Sana Arjyapalli — village updates, public issues, development and community connections.">
-<style>
+<style>/* Professional Development Tracker */
+
+#projectsList {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, 320px), 1fr)
+  );
+  gap: 24px;
+  margin-top: 24px;
+  align-items: stretch;
+}
+
+#projectsList > .card {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 24px;
+  border: 1px solid #e4e9e6;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 28px rgba(16, 44, 59, 0.06);
+  transition: transform 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+#projectsList > .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 35px rgba(16, 44, 59, 0.12);
+}
+
+#projectsList h3 {
+  font-size: 21px;
+  line-height: 1.35;
+  color: #102c3b;
+  margin: 12px 0;
+}
+
+#projectsList p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #61727a;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+
+#projectsList img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+#projectsList .tag {
+  display: inline-block;
+  margin: 12px 0;
+  padding: 7px 14px;
+  border-radius: 30px;
+  background: #dff2e7;
+  color: #176b63;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  #projectsList {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  #projectsList > .card {
+    padding: 18px;
+  }
+
+  #projectsList h3 {
+    font-size: 19px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #projectsList > .card {
+    transition: none;
+  }
+
+  #projectsList > .card:hover {
+    transform: none;
+  }
+}
 :root{--navy:#102c3b;--teal:#176b63;--mint:#dff2e7;--sand:#f6f3ec;--ink:#20313a;--muted:#61727a;--white:#fff;--line:#e4e9e6;--orange:#e79a4b}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--sand);color:var(--ink);line-height:1.55}
 header{background:var(--navy);color:#fff;padding:16px 6%;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:5}
@@ -60,14 +148,12 @@ footer{background:#0b202b;color:#d8e5e2;padding:32px 6%;text-align:center}footer
 
 <section id="development" style="margin-top:48px">
   <div class="section-head">
-<div><h2 data-en="Development Tracker" data-te="అభివృద్ధి ట్రాకర్" data-or="ବିକାଶ ଟ୍ରାକର୍">Development Tracker</h2><p data-en="Track projects transparently. Sample entries below need verification before publication." data-te="ప్రాజెక్టులను పారదర్శకంగా ట్రాక్ చేయండి. క్రింది నమూనా వివరాలను ప్రచురించే ముందు నిర్ధారించాలి." data-or="ପ୍ରକଳ୍ପଗୁଡ଼ିକୁ ସ୍ୱଚ୍ଛ ଭାବେ ଟ୍ରାକ୍ କରନ୍ତୁ. ନିମ୍ନ ନମୁନା ତଥ୍ୟ ପ୍ରକାଶ ପୂର୍ବରୁ ଯାଞ୍ଚ କରନ୍ତୁ.">Track projects transparently. Sample entries below need verification before publication.</p></div></div>
-<div class="card">
-<div class="project"><div><strong data-en="Road & Drainage" data-te="రోడ్లు & డ్రైనేజీ" data-or="ରାସ୍ତା ଓ ଡ୍ରେନେଜ୍">Road & Drainage</strong><div class="notice" data-en="Add official project details and updates" data-te="అధికారిక ప్రాజెక్ట్ వివరాలు జోడించండి" data-or="ସରକାରୀ ପ୍ରକଳ୍ପ ବିବରଣୀ ଯୋଡନ୍ତୁ">Add official project details and updates</div></div><span class="status pending" data-en="Needs update" data-te="అప్‌డేట్ అవసరం" data-or="ଅପଡେଟ୍ ଆବଶ୍ୟକ">Needs update</span></div>
-<div class="project"><div><strong data-en="Coastal Protection" data-te="తీర రక్షణ" data-or="ଉପକୂଳ ସୁରକ୍ଷା">Coastal Protection</strong><div class="notice" data-en="Add verified progress, dates and sources" data-te="నిర్ధారించిన పురోగతి, తేదీలు, ఆధారాలు జోడించండి" data-or="ଯାଞ୍ଚିତ ପ୍ରଗତି, ତାରିଖ ଓ ଉତ୍ସ ଯୋଡନ୍ତୁ">Add verified progress, dates and sources</div></div><span class="status progress" data-en="Monitoring" data-te="పర్యవేక్షణ" data-or="ନଜର ରଖାଯାଉଛି">Monitoring</span></div>
-<div class="project"><div><strong data-en="Public Facilities" data-te="ప్రజా సౌకర్యాలు" data-or="ଜନସାଧାରଣ ସୁବିଧା">Public Facilities</strong><div class="notice" data-en="Record needs, responsible department and status" data-te="అవసరాలు, సంబంధిత శాఖ, స్థితి నమోదు చేయండి" data-or="ଆବଶ୍ୟକତା, ଦାୟିତ୍ୱ ବିଭାଗ ଓ ସ୍ଥିତି ଲେଖନ୍ତୁ">Record needs, responsible department and status</div></div><span class="status pending" data-en="To be documented" data-te="నమోదు చేయాలి" data-or="ଦଲିଲ କରିବାକୁ ଅଛି">To be documented</span></div>
-
-</div>
-
+<div><h2 data-en="Development Tracker" data-te="అభివృద్ధి ట్రాకర్" data-or="ବିକାଶ ଟ୍ରାକର୍">Development Tracker</h2><p
+  data-en="Explore village development projects, budgets and progress updates."
+  data-te="గ్రామ అభివృద్ధి ప్రాజెక్టులు, బడ్జెట్లు మరియు పురోగతి వివరాలను చూడండి."
+  data-or="ଗ୍ରାମ ବିକାଶ ପ୍ରକଳ୍ପ, ବଜେଟ୍ ଓ ପ୍ରଗତି ସୂଚନା ଦେଖନ୍ତୁ.">
+  Explore village development projects, budgets and progress updates.
+</p></div></div>
 <div id="projectsList" class="grid">
   <p>Loading development projects...</p>
 </div>
