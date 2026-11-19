@@ -177,6 +177,58 @@ th, td {
   </div>
 </div>
     <div class="card">
+      
+<div class="card">
+  <h2>Add Development Project</h2>
+  <p>Track village development works and government projects.</p>
+
+  <form id="projectForm">
+    <input type="text" id="projectName"
+      placeholder="Project Name" required>
+
+    <textarea id="projectDescription"
+      placeholder="Project Description"
+      rows="4" required></textarea>
+
+    <input type="text" id="projectDepartment"
+      placeholder="Responsible Department">
+
+    <input type="number" id="projectEstimatedBudget"
+      placeholder="Estimated Budget (INR)" min="0">
+
+    <input type="number" id="projectApprovedBudget"
+      placeholder="Approved Budget (INR)" min="0">
+
+    <label for="projectStartDate">Start Date</label>
+    <input type="date" id="projectStartDate">
+
+    <label for="projectCompletionDate">
+      Expected Completion Date
+    </label>
+    <input type="date" id="projectCompletionDate">
+
+    <select id="projectStatus">
+      <option value="Proposed">Proposed</option>
+      <option value="Approved">Approved</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Completed">Completed</option>
+      <option value="Delayed">Delayed</option>
+    </select>
+
+    <label for="projectProgress">Progress (%)</label>
+    <input type="number" id="projectProgress"
+      min="0" max="100" value="0">
+
+    <input type="url" id="projectImage"
+      placeholder="Project Image URL (optional)">
+
+    <button type="submit" id="addProjectBtn">
+      Add Project
+    </button>
+
+    <p id="projectMessage" role="status"></p>
+  </form>
+</div>
       <h2>Village Complaints</h2>
       <p>View complaints submitted by residents.</p>
 
