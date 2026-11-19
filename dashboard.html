@@ -513,6 +513,104 @@ container.appendChild(card);
   });
 }
 
+const projectForm = document.getElementById('projectForm');
+const projectMessage = document.getElementById('projectMessage');
+const addProjectBtn = document.getElementById('addProjectBtn');
+
+projectForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const projectName =
+    document.getElementById('projectName').value.trim();
+
+  const description =
+    document.getElementById('projectDescription').value.trim();
+
+  const department =
+    document.getElementById('projectDepartment').value.trim();
+
+  const estimatedBudget =
+    document.getElementById('projectEstimatedBudget').value;
+
+  const approvedBudget =
+    document.getElementById('projectApprovedBudget').value;
+
+  const startDate =
+    document.getElementById('projectStartDate').value;
+
+  const completionDate =
+    document.getElementById('projectCompletionDate').value;
+
+  const status =
+    document.getElementById('projectStatus').value;
+
+  const progress =
+    Number(document.getElementById('projectProgress').value);
+
+  const imageUrl =
+    document.getElementById('projectImage').value.trim();
+
+  projectMessage.textContent = '';
+
+  if (!projectName || !description) {
+    projectMessage.textContent =
+      'Project name and description are required.';
+    return;
+  }
+
+  if (!Number.isFinite(progress) || progress < 0 || progress > 100) {
+    projectMessage.textContent =
+      'Progress must be between 0 and 100.';
+    return;
+  }
+
+  addProjectBtn.disabled = true;
+  addProjectBtn.textContent = 'Saving...';
+
+  try {
+    const { data: { user }, error: authError } =
+      await db.auth.getUser();
+
+    if (authError || !user || user.id !== ADMIN_UID) {
+      projectMessage.textContent = 'Admin access required.';
+      return;
+    }
+
+    const { error } = await db.from('projects').insert({
+      project_name: projectName,
+      description: description,
+      department: department || null,
+      estimated_budget: estimatedBudget === ''
+        ? null : Number(estimatedBudget),
+      approved_budget: approvedBudget === ''
+        ? null : Number(approvedBudget),
+      start_date: startDate || null,
+      expected_completion: completionDate || null,
+      status: status,
+      progress: progress,
+      image_url: imageUrl || null
+    });
+
+    if (error) {
+      console.error(error);
+      projectMessage.textContent =
+        'Unable to save project: ' + error.message;
+    } else {
+      projectMessage.textContent =
+        'Development project added successfully!';
+      projectForm.reset();
+    }
+
+  } catch (error) {
+    console.error(error);
+    projectMessage.textContent =
+      'An unexpected error occurred.';
+  } finally {
+    addProjectBtn.disabled = false;
+    addProjectBtn.textContent = 'Add Project';
+  }
+});
+
 const newsForm = document.getElementById('newsForm');
 const newsMessage = document.getElementById('newsMessage');
 const publishNewsBtn = document.getElementById('publishNewsBtn');
