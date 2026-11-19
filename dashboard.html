@@ -731,9 +731,166 @@ logout.addEventListener('click', async () => {
   await db.auth.signOut();
   window.location.replace('/admin.html');
 });
+// Manage Development Projects
 
+async function loadManageProjects() {
+  const container = document.getElementById('manageProjectsList');
+  container.textContent = 'Loading projects...';
+
+  const { data, error } = await db
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error(error);
+    container.textContent = 'Unable to load projects: ' + error.message;
+    return;
+  }
+
+  container.replaceChildren();
+
+  if (!data || data.length === 0) {
+    container.textContent = 'No development projects available.';
+    return;
+  }
+
+  data.forEach(item => {
+    const card = document.createElement('div');
+    card.style.padding = '20px 0';
+    card.style.borderBottom = '1px solid #ddd';
+
+    const title = document.createElement('h3');
+    title.textContent = item.project_name || 'Unnamed Project';
+
+    const department = document.createElement('p');
+    department.textContent =
+      'Department: ' + (item.department || 'Not specified');
+
+    const status = document.createElement('p');
+    status.textContent = 'Status: ' + (item.status || 'Pending');
+
+    const progress = document.createElement('p');
+    progress.textContent = 'Progress: ' + (item.progress ?? 0) + '%';
+
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit Project';
+
+    editButton.addEventListener('click', async () => {
+      const newName = prompt('Project Name:', item.project_name);
+      if (newName === null) return;
+
+      const newDescription = prompt(
+        'Project Description:',
+        item.description || ''
+      );
+      if (newDescription === null) return;
+
+      const newDepartment = prompt(
+        'Responsible Department:',
+        item.department || ''
+      );
+      if (newDepartment === null) return;
+
+      const newStatus = prompt(
+        'Status (Proposed, Approved, In Progress, Completed, Delayed):',
+        item.status || 'Proposed'
+      );
+      if (newStatus === null) return;
+
+      const newProgress = prompt(
+        'Progress (0-100):',
+        item.progress ?? 0
+      );
+      if (newProgress === null) return;
+
+      const allowedStatuses = [
+        'Proposed', 'Approved', 'In Progress',
+        'Completed', 'Delayed', 'Pending'
+      ];
+
+      const progressNumber = Number(newProgress);
+
+      if (
+        !newName.trim() ||
+        !newDescription.trim() ||
+        !allowedStatuses.includes(newStatus.trim()) ||
+        newProgress.trim() === '' ||
+        !Number.isInteger(progressNumber) ||
+        progressNumber < 0 ||
+        progressNumber > 100
+      ) {
+        alert('Please enter valid project details, status, and progress.');
+        return;
+      }
+
+      editButton.disabled = true;
+      editButton.textContent = 'Saving...';
+
+      const { error } = await db
+        .from('projects')
+        .update({
+          project_name: newName.trim(),
+          description: newDescription.trim(),
+          department: newDepartment.trim() || null,
+          status: newStatus.trim(),
+          progress: progressNumber
+        })
+        .eq('id', item.id);
+
+      if (error) {
+        console.error(error);
+        alert('Unable to update project: ' + error.message);
+        editButton.disabled = false;
+        editButton.textContent = 'Edit Project';
+        return;
+      }
+
+      await loadManageProjects();
+    });
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.style.marginLeft = '10px';
+    deleteButton.style.background = '#b42318';
+
+    deleteButton.addEventListener('click', async () => {
+      if (!confirm('Permanently delete this project?')) return;
+
+      deleteButton.disabled = true;
+      deleteButton.textContent = 'Deleting...';
+
+      const { error } = await db
+        .from('projects')
+        .delete()
+        .eq('id', item.id);
+
+      if (error) {
+        console.error(error);
+        alert('Unable to delete project: ' + error.message);
+        deleteButton.disabled = false;
+        deleteButton.textContent = 'Delete';
+        return;
+      }
+
+      await loadManageProjects();
+    });
+
+    card.append(
+      title,
+      department,
+      status,
+      progress,
+      editButton,
+      deleteButton
+    );
+
+    container.appendChild(card);
+  });
+}
 loadDashboard();
   loadManageNews();
+  loadManageProjects();
 </script>
 </body>
 </html>
