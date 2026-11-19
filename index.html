@@ -4,7 +4,42 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Arjyapalli Connect | Our Village. Our Voice. Our Future.</title>
 <meta name="description" content="A community platform for Sana Arjyapalli — village updates, public issues, development and community connections.">
-<style>/* Professional Development Tracker */
+/* Development Project Budget Boxes */
+
+#projectsList .project-budget-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+
+#projectsList .project-budget-box {
+  background: #f4f8f6;
+  border: 1px solid #e4e9e6;
+  border-radius: 12px;
+  padding: 14px;
+  min-width: 0;
+}
+
+#projectsList .project-budget-box small {
+  display: block;
+  color: #61727a;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+#projectsList .project-budget-box strong {
+  display: block;
+  color: #102c3b;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 380px) {
+  #projectsList .project-budget-grid {
+    grid-template-columns: 1fr;
+  }
+}<style>/* Professional Development Tracker */
 
 #projectsList {
   display: grid;
@@ -303,13 +338,32 @@ async function loadDevelopmentProjects() {
     department.textContent =
       'Department: ' + (item.department || 'Not specified');
 
-    const estimatedBudget = document.createElement('p');
-    estimatedBudget.textContent =
-      'Estimated Budget: ' + formatBudget(item.estimated_budget);
+    const budgetContainer = document.createElement('div');
+budgetContainer.className = 'project-budget-grid';
 
-    const approvedBudget = document.createElement('p');
-    approvedBudget.textContent =
-      'Approved Budget: ' + formatBudget(item.approved_budget);
+const estimatedBudget = document.createElement('div');
+estimatedBudget.className = 'project-budget-box';
+
+const estimatedLabel = document.createElement('small');
+estimatedLabel.textContent = 'Estimated Budget';
+
+const estimatedValue = document.createElement('strong');
+estimatedValue.textContent = formatBudget(item.estimated_budget);
+
+estimatedBudget.append(estimatedLabel, estimatedValue);
+
+const approvedBudget = document.createElement('div');
+approvedBudget.className = 'project-budget-box';
+
+const approvedLabel = document.createElement('small');
+approvedLabel.textContent = 'Approved Budget';
+
+const approvedValue = document.createElement('strong');
+approvedValue.textContent = formatBudget(item.approved_budget);
+
+approvedBudget.append(approvedLabel, approvedValue);
+
+budgetContainer.append(estimatedBudget, approvedBudget);
 
     const status = document.createElement('span');
     status.className = 'tag';
@@ -346,16 +400,15 @@ async function loadDevelopmentProjects() {
       (item.expected_completion || 'Not available');
 
     card.append(
-      title,
-      description,
-      department,
-      estimatedBudget,
-      approvedBudget,
-      status,
-      progressText,
-      progressTrack,
-      dates
-    );
+  title,
+  description,
+  department,
+  budgetContainer,
+  status,
+  progressText,
+  progressTrack,
+  dates
+);
 
     projectsList.appendChild(card);
   });
