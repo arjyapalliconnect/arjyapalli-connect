@@ -386,7 +386,39 @@ toggleButton.addEventListener('click', async () => {
   await loadManageNews();
 });
 
-card.append(title, category, status, toggleButton);
+const deleteButton = document.createElement('button');
+deleteButton.textContent = 'Delete';
+deleteButton.style.marginLeft = '10px';
+deleteButton.style.background = '#b42318';
+deleteButton.style.color = 'white';
+
+deleteButton.addEventListener('click', async () => {
+  const confirmed = confirm(
+    'Are you sure you want to permanently delete this news?'
+  );
+
+  if (!confirmed) return;
+
+  deleteButton.disabled = true;
+  deleteButton.textContent = 'Deleting...';
+
+  const { error } = await db
+    .from('news')
+    .delete()
+    .eq('id', item.id);
+
+  if (error) {
+    console.error(error);
+    alert('Unable to delete news: ' + error.message);
+    deleteButton.disabled = false;
+    deleteButton.textContent = 'Delete';
+    return;
+  }
+
+  await loadManageNews();
+});
+
+card.append(title, category, status, toggleButton, deleteButton);
 container.appendChild(card);
   });
 }
